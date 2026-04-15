@@ -6,7 +6,7 @@
  */
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Globe, Bell, ChevronRight, Palette, Check, Sun, Moon, Zap, Briefcase } from 'lucide-react';
+import { Globe, Bell, ChevronRight, Palette, Check, Sun, Moon, Zap, Briefcase, Search } from 'lucide-react';
 import { useAuthStore, AppTheme } from '../../store/authStore';
 
 // ── Theme definitions ──────────────────────────────────────────────────────────
@@ -100,9 +100,44 @@ export default function TopBar() {
   return (
     <div
       className="topbar sticky top-0 z-30 flex items-center justify-between px-5 py-2.5"
-      style={{ minHeight: 50 }}
+      style={{ minHeight: 52 }}
     >
-      {/* ── Left: Breadcrumb ──────────────────────────────────────────────── */}
+      {/* ── Left: Search + Breadcrumb ─────────────────────────────────────── */}
+      <div className="flex items-center gap-3 min-w-0 flex-1">
+        {/* Global search */}
+        <div
+          className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all"
+          style={{
+            background: '#f9fafb',
+            border: '1px solid #e5e7eb',
+            width: 220,
+          }}
+          onFocus={() => {}}
+        >
+          <Search size={13} style={{ color: '#9ca3af', flexShrink: 0 }} />
+          <input
+            type="text"
+            placeholder={lang === 'ar' ? 'ابحث في المشاريع...' : 'Search projects...'}
+            style={{
+              background: 'transparent', border: 'none', outline: 'none',
+              fontSize: 13, color: '#374151', width: '100%',
+            }}
+            onFocus={e => {
+              const parent = e.currentTarget.parentElement!;
+              parent.style.border = '1px solid #3b82f6';
+              parent.style.background = '#fff';
+              parent.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.1)';
+            }}
+            onBlur={e => {
+              const parent = e.currentTarget.parentElement!;
+              parent.style.border = '1px solid #e5e7eb';
+              parent.style.background = '#f9fafb';
+              parent.style.boxShadow = 'none';
+            }}
+          />
+        </div>
+
+        {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm min-w-0">
         {!isHome && (
           <>
@@ -128,6 +163,7 @@ export default function TopBar() {
             {location.pathname.split('/').pop()?.replace(/-/g, ' ') || 'Page'}
           </span>
         )}
+      </div>
       </div>
 
       {/* ── Right: Controls ───────────────────────────────────────────────── */}

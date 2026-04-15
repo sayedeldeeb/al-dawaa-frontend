@@ -769,20 +769,4 @@ export default function ChurnedCustomerPage({ projectId }: { projectId?: string 
                     <span style={{ fontSize: 12, fontWeight: 700, color: '#9ca3af', width: 20, textAlign: 'center', fontFamily: 'Inter' }}>{i + 1}</span>
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, fontWeight: 600, color: '#374151' }}>{r.name}</span>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: section.color, fontFamily: 'Inter' }}>{(r.pct * 100).toFixed(1)}%</span>
-                      </div>
-                      <div style={{ background: '#f3f4f6', borderRadius: 4, height: 5, overflow: 'hidden' }}>
-                        <div style={{ width: `${Math.min((r.pct * 100), 100).toFixed(0)}%`, background: section.color, height: '100%', borderRadius: 4, transition: 'width 0.4s ease' }} />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+         

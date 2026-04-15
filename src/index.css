@@ -245,7 +245,7 @@
 
 /* ── Typography ────────────────────────────────────────────────────────────── */
 body {
-  background: var(--c-bg);
+  background: #f8fafc;
   color: var(--c-text);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
@@ -254,8 +254,16 @@ body {
   letter-spacing: -0.01em;
   line-height: 1.5;
 }
+/* Arabic: Tajawal (reference design) */
 [dir="rtl"] body, [dir="rtl"] * {
-  font-family: 'Noto Kufi Arabic', 'Inter', sans-serif;
+  font-family: 'Tajawal', 'Noto Kufi Arabic', 'Inter', sans-serif !important;
+}
+/* Numbers always use Inter for consistency */
+[dir="rtl"] .kpi-number,
+[dir="rtl"] .kpi-val,
+[dir="rtl"] td,
+[dir="rtl"] .metric {
+  font-family: 'Inter', sans-serif !important;
 }
 input, button, select, textarea { font-family: inherit; }
 

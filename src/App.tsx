@@ -24,8 +24,15 @@ function ProtectedRoute({ children, roles }: { children: React.ReactNode; roles?
 function AlertsPage() {
   const { lang } = useAuthStore();
   return (
-    <div className="p-6 fade-in">
-      <h1 className="text-2xl font-bold mb-4" style={{ color: '#002544' }}>{lang === 'ar' ? 'لوحة التنبيهات' : 'Alerts Panel'}</h1>
+    <div className="p-6 fade-in" style={{ maxWidth: 800 }}>
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: 22, fontWeight: 800, color: '#111827', marginBottom: 4 }}>
+          {lang === 'ar' ? 'لوحة التنبيهات' : 'Alerts Panel'}
+        </h1>
+        <p style={{ fontSize: 13, color: '#9ca3af' }}>
+          {lang === 'ar' ? 'التنبيهات والإشعارات النشطة' : 'Active alerts and notifications'}
+        </p>
+      </div>
       <div className="space-y-3">
         {[
           { title: lang === 'ar' ? 'مخزون CPAP Machine منخفض' : 'CPAP Machine stock critically low', detail: lang === 'ar' ? '12 وحدة متبقية في منطقة الرياض' : '12 units remaining in Riyadh region', type: 'critical', time: '2h ago' },
@@ -42,6 +49,32 @@ function AlertsPage() {
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Stub page for upcoming features ─────────────────────────────────────── */
+function ComingSoonPage({ titleEn, titleAr, descEn, descAr, icon }: {
+  titleEn: string; titleAr: string;
+  descEn: string; descAr: string;
+  icon: string;
+}) {
+  const { lang } = useAuthStore();
+  return (
+    <div style={{ padding: '60px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 400 }}>
+      <div style={{ fontSize: 56, marginBottom: 16 }}>{icon}</div>
+      <h1 style={{ fontSize: 22, fontWeight: 800, color: '#111827', marginBottom: 8, textAlign: 'center' }}>
+        {lang === 'ar' ? titleAr : titleEn}
+      </h1>
+      <p style={{ fontSize: 14, color: '#9ca3af', textAlign: 'center', maxWidth: 400, lineHeight: 1.6 }}>
+        {lang === 'ar' ? descAr : descEn}
+      </p>
+      <div style={{ marginTop: 24, display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 18px', background: '#f0f4ff', borderRadius: 8, border: '1px solid #dbeafe' }}>
+        <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#3b82f6', display: 'inline-block' }} />
+        <span style={{ fontSize: 13, fontWeight: 600, color: '#3b82f6' }}>
+          {lang === 'ar' ? 'قريباً' : 'Coming Soon'}
+        </span>
       </div>
     </div>
   );
@@ -88,6 +121,38 @@ export default function App() {
           <Route path="/projects/pill-pack" element={<ChurnedCustomerPage projectId="pill-pack" />} />
           {/* Hybrid Pharmacy */}
           <Route path="/projects/hybrid-pharmacy" element={<HybridPharmacyPage />} />
+
+          {/* New pages from reference */}
+          <Route path="/analytics" element={
+            <ComingSoonPage
+              titleEn="Advanced Analytics" titleAr="التحليلات المتقدمة"
+              descEn="Deep-dive analytics with AI-powered insights across all projects and regions."
+              descAr="تحليلات متعمقة مدعومة بالذكاء الاصطناعي عبر جميع المشاريع والمناطق."
+              icon="📈"
+            />
+          } />
+          <Route path="/goals" element={
+            <ComingSoonPage
+              titleEn="Goals & Targets" titleAr="الأهداف والمستهدفات"
+              descEn="Set and track monthly targets for each project, region, and team member."
+              descAr="تحديد ومتابعة المستهدفات الشهرية لكل مشروع ومنطقة وعضو فريق."
+              icon="🎯"
+            />
+          } />
+          <Route path="/tasks" element={
+            <ComingSoonPage
+              titleEn="Tasks Management" titleAr="إدارة المهام"
+              descEn="Assign, track and manage operational tasks across your pharmacy network."
+              descAr="إسناد ومتابعة وإدارة المهام التشغيلية عبر شبكة صيدلياتك."
+              icon="✅"
+            />
+          } />
+
+          {/* New project stubs */}
+          <Route path="/projects/vip-customers"  element={<ChurnedCustomerPage projectId="vip-customers" />} />
+          <Route path="/projects/onboarding"     element={<ChurnedCustomerPage projectId="onboarding" />} />
+          <Route path="/projects/call-center"    element={<ChurnedCustomerPage projectId="call-center" />} />
+          <Route path="/projects/rasd"           element={<ChurnedCustomerPage projectId="rasd" />} />
 
           {/* Settings */}
           <Route path="/settings" element={<SettingsPage />} />
