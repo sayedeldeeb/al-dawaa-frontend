@@ -43,7 +43,7 @@ export default function Sidebar() {
   };
   const itemActive: React.CSSProperties = {
     ...itemBase,
-    background: 'rgba(0,37,68,0.07)', color: '#002544',
+    background: '#E8EEF4', color: '#002544',
     fontWeight: 700,
     ...(isEn
       ? { borderRight: '3px solid #FFC200', paddingRight: 9 }
