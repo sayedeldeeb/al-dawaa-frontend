@@ -3,7 +3,7 @@
 # ═══════════════════════════════════════════════════════════
 
 [build]
-  command = "npm install && npx vite build"
+  command = "npm ci && node node_modules/vite/bin/vite.js build"
   publish = "dist"
 
 # Required environment variables (set in Netlify UI → Site Settings → Env Vars):
