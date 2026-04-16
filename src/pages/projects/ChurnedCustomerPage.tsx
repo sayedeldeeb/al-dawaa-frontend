@@ -2,9 +2,13 @@
  * ChurnedCustomerPage — Dynamic API version
  * Connects to real backend via dataApi — Reference Design v2
  */
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, lazy, Suspense } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { dataApi } from '../../api/client';
+
+// Lazy-load upload modals — NOT in initial bundle
+const UploadModal        = lazy(() => import('../../components/upload/UploadModal'));
+const TemplateEditorModal = lazy(() => import('../../components/upload/TemplateEditorModal'));
 import {
   BarChart, Bar, AreaChart, Area, ComposedChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend,
@@ -119,11 +123,13 @@ function LoadingRow() {
 ══════════════════════════════════════════════════════════════════════════ */
 export default function ChurnedCustomerPage({ projectId }: { projectId?: string }) {
   const pid = projectId || PROJECT_ID;
-  const { lang } = useAuthStore();
+  const { lang, user } = useAuthStore();
   const isEn = lang === 'en';
   const t = T[lang as 'ar' | 'en'] ?? T.en;
 
   /* ── UI State ────────────────────────────────────────────────────────── */
+  const [showUpload,   setShowUpload]   = useState(false);
+  const [showTemplate, setShowTplEditor]= useState(false);
   const [activeTab,    setActiveTab]    = useState<'data' | 'charts' | 'ranking' | 'topbottom'>('data');
   const [rankType,     setRankType]     = useState<'supervisor' | 'senior' | 'district' | 'region'>('supervisor');
   const [showFilter,   setShowFilter]   = useState(false);
@@ -271,7 +277,7 @@ export default function ChurnedCustomerPage({ projectId }: { projectId?: string 
           <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>{t.pageTitle}</h1>
           <p style={{ fontSize: 13, color: '#6b7280', marginTop: 4 }}>{fmtNum(totalRecs)} {t.records}</p>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <button className="ref-sidebar-item" style={{ gap: 6, padding: '8px 14px', border: '1px solid #e5e7eb', borderRadius: 8, width: 'auto', color: '#374151', background: '#fff' }}>
             <Ic.Export /> {t.exportReport}
           </button>
@@ -285,6 +291,24 @@ export default function ChurnedCustomerPage({ projectId }: { projectId?: string 
             <Ic.Filter /> {t.filter}
             {isFilterActive && <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#3b82f6', display: 'inline-block' }} />}
           </button>
+          {/* ── Upload button (admin only) ─────────────────────────────────── */}
+          {user?.role === 'admin' && (
+            <>
+              <button
+                onClick={() => setShowTplEditor(true)}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, border: '1px solid #e5e7eb', background: '#fff', fontSize: 13, fontWeight: 600, color: '#6b7280', cursor: 'pointer' }}
+                title={isEn ? 'Edit Template' : 'تعديل القالب'}
+              >
+                ⚙️ {isEn ? 'Template' : 'القالب'}
+              </button>
+              <button
+                onClick={() => setShowUpload(true)}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, border: 'none', background: '#3b82f6', fontSize: 13, fontWeight: 700, color: '#fff', cursor: 'pointer', boxShadow: '0 2px 8px rgba(59,130,246,0.3)' }}
+              >
+                ⬆️ {isEn ? 'Upload Data' : 'رفع البيانات'}
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -784,5 +808,32 @@ export default function ChurnedCustomerPage({ projectId }: { projectId?: string 
         </div>
       )}
     </div>
+
+      {/* ── Upload Modal (lazy) ─────────────────────────────────────────── */}
+      {showUpload && (
+        <Suspense fallback={null}>
+          <UploadModal
+            projectId={pid}
+            onClose={() => setShowUpload(false)}
+            onSuccess={() => {
+              setShowUpload(false);
+              // Refresh data after successful upload
+              setFilters(f => ({ ...f }));
+            }}
+          />
+        </Suspense>
+      )}
+
+      {/* ── Template Editor Modal (lazy) ────────────────────────────────── */}
+      {showTemplate && (
+        <Suspense fallback={null}>
+          <TemplateEditorModal
+            projectId={pid}
+            projectNameEn={t.pageTitle}
+            projectNameAr={t.pageTitle}
+            onClose={() => setShowTplEditor(false)}
+          />
+        </Suspense>
+      )}
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import * as XLSX from 'xlsx';
+// XLSX is lazy-loaded on file drop to avoid bloating the initial bundle
 import { uploadApi, projectsApi } from '../api/client';
 import { useAuthStore } from '../store/authStore';
 import { UploadBatch, Project } from '../types';
@@ -37,26 +37,24 @@ export default function UploadPage() {
     } catch {}
   };
 
-  const onDrop = useCallback((accepted: File[]) => {
+  const onDrop = useCallback(async (accepted: File[]) => {
     const f = accepted[0];
     if (!f) return;
     setFile(f);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = new Uint8Array(e.target?.result as ArrayBuffer);
-      const wb = XLSX.read(data, { type: 'array' });
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const rows: any[] = XLSX.utils.sheet_to_json(ws, { header: 1 });
-      if (rows.length > 0) {
-        setHeaders(rows[0] as string[]);
-        const dataRows = rows.slice(1, 6).map(r =>
-          Object.fromEntries((rows[0] as string[]).map((h, i) => [h, (r as any[])[i]]))
-        );
-        setPreviewRows(dataRows);
-        setStep('preview');
-      }
-    };
-    reader.readAsArrayBuffer(f);
+    // Lazy-load xlsx only when a file is actually dropped
+    const XLSX = await import('xlsx');
+    const buf  = await f.arrayBuffer();
+    const wb   = XLSX.read(new Uint8Array(buf), { type: 'array' });
+    const ws   = wb.Sheets[wb.SheetNames[0]];
+    const rows: any[] = XLSX.utils.sheet_to_json(ws, { header: 1 });
+    if (rows.length > 0) {
+      setHeaders(rows[0] as string[]);
+      const dataRows = rows.slice(1, 6).map(r =>
+        Object.fromEntries((rows[0] as string[]).map((h, i) => [h, (r as any[])[i]]))
+      );
+      setPreviewRows(dataRows);
+      setStep('preview');
+    }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
