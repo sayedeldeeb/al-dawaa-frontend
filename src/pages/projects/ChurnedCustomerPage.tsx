@@ -269,6 +269,7 @@ export default function ChurnedCustomerPage({ projectId }: { projectId?: string 
      RENDER
   ══════════════════════════════════════════════════════════════════════ */
   return (
+    <>
     <div style={{ paddingBottom: 40 }} className="ref-fade-in">
 
       {/* ── Page Header ──────────────────────────────────────────────────── */}
@@ -809,22 +810,18 @@ export default function ChurnedCustomerPage({ projectId }: { projectId?: string 
       )}
     </div>
 
-      {/* ── Upload Modal (lazy) ─────────────────────────────────────────── */}
+      {/* ── Upload Modal ──────────────────────────────────────────────────── */}
       {showUpload && (
         <Suspense fallback={null}>
           <UploadModal
             projectId={pid}
             onClose={() => setShowUpload(false)}
-            onSuccess={() => {
-              setShowUpload(false);
-              // Refresh data after successful upload
-              setFilters(f => ({ ...f }));
-            }}
+            onSuccess={() => { setShowUpload(false); setFilters(f => ({ ...f })); }}
           />
         </Suspense>
       )}
 
-      {/* ── Template Editor Modal (lazy) ────────────────────────────────── */}
+      {/* ── Template Editor Modal ─────────────────────────────────────────── */}
       {showTemplate && (
         <Suspense fallback={null}>
           <TemplateEditorModal
@@ -835,5 +832,7 @@ export default function ChurnedCustomerPage({ projectId }: { projectId?: string 
           />
         </Suspense>
       )}
+    </>
   );
 }
+
