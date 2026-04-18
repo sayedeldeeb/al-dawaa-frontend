@@ -1,13 +1,12 @@
 # ═══════════════════════════════════════════════════════════
-#  Netlify configuration for AL-Dawaa Analytics Platform
+#  Netlify — AL-Dawaa Analytics Platform
+#  Pre-built deployment: dist/ is committed and deployed directly
+#  No build step on Netlify — build locally then push dist/
 # ═══════════════════════════════════════════════════════════
 
 [build]
-  command = "npm ci && node node_modules/vite/bin/vite.js build"
+  command = ""
   publish = "dist"
-
-# Required environment variables (set in Netlify UI → Site Settings → Env Vars):
-#   VITE_API_URL  =  https://your-app.up.railway.app
 
 # ── SPA routing: all paths → index.html ──────────────────────
 [[redirects]]
